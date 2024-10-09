@@ -1,1 +1,3 @@
 rootProject.name = 'syncwave'
+include 'sync-wave-service'
+include 'sync-wave-common'

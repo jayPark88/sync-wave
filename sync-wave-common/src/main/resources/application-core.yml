@@ -1,0 +1,4 @@
+service:
+  interface:
+    sample:
+      url: https://randomuser.me/
