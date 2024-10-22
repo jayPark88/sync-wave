@@ -56,7 +56,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
-        return userRepository.findById(userId)
+        return userRepository.findByEmail(userId)
                 .map(this::createUser)
                 .orElseThrow(() -> new UsernameNotFoundException(userId + " -> 데이터베이스에서 찾을 수 없습니다."));
     }

@@ -8,6 +8,7 @@ import com.parker.common.enums.UserStatus;
 import com.parker.common.exception.CustomException;
 import com.parker.common.jpa.entity.UserEntity;
 import com.parker.common.jpa.repository.UserRepository;
+import com.parker.common.util.security.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
@@ -71,29 +72,69 @@ public class UserService {
 
     @Transactional
     public UserEntity updateUser(String userId, UserUpdateRequestDto userUpdateRequestDto) {
-        return userRepository.findById(userId)
-                .map(existingUser -> {
-                    Optional.ofNullable(userUpdateRequestDto.getPassword())
-                            .map(passwordEncoder::encode)// map: userUpdateRequestDto.getPassword()는 인코딩 후에 설정해야 하므로 map을 사용하여 중간 변환을 처리합니다.
-                            .ifPresent(existingUser::setPassword);
-                    return existingUser;
-                }).orElseThrow(() -> new CustomException(FAIL_500.code(), messageSource.getMessage("user.not.found", null, Locale.getDefault()), HttpStatus.INTERNAL_SERVER_ERROR));
+        if (checkUserCheck(userId)) {
+            return userRepository.findByEmail(userId)
+                    .map(existingUser -> {
+                        Optional.ofNullable(userUpdateRequestDto.getPassword())
+                                .map(passwordEncoder::encode)// map: userUpdateRequestDto.getPassword()는 인코딩 후에 설정해야 하므로 map을 사용하여 중간 변환을 처리합니다.
+                                .ifPresent(existingUser::setPassword);
+                        return existingUser;
+                    }).orElseThrow(() -> new CustomException(FAIL_500.code(), messageSource.getMessage("user.not.found", null, Locale.getDefault()), HttpStatus.INTERNAL_SERVER_ERROR));
+        } else {
+            throw new CustomException(FAIL_500.code(), messageSource.getMessage("user.un.auth", null, Locale.getDefault()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @Transactional
-    public String deleteUserInfo(String userId){
-        userRepository.deleteById(userId);
-        return userId+" deleted!";
+    public String deleteUserInfo(String userId) {
+        if (checkUserCheck(userId) && roleCheck(userId)) {
+            userRepository.deleteById(userId);
+            return userId + " deleted!";
+        } else {
+            throw new CustomException(FAIL_500.code(), messageSource.getMessage("user.un.auth", null, Locale.getDefault()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @Transactional(readOnly = true)
     public Page<UserEntity> searchUserList(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        return userRepository.findAll(pageable);
+        if (checkUserCheck() && roleCheck()) {
+            Pageable pageable = PageRequest.of(page, size);
+            return userRepository.findAll(pageable);
+        } else {
+            throw new CustomException(FAIL_500.code(), messageSource.getMessage("user.un.auth", null, Locale.getDefault()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @Transactional(readOnly = true)
-    public Optional<UserEntity> getUserInfo(String userId){
-        return userRepository.findById(userId);
+    public Optional<UserEntity> getUserInfo(String userId) {
+        if (checkUserCheck(userId)) {
+            return userRepository.findById(userId);
+        } else {
+            throw new CustomException(FAIL_500.code(), messageSource.getMessage("user.un.auth", null, Locale.getDefault()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    private boolean checkUserCheck(String userId) {
+        return SecurityUtil.getCurrentUserName()
+                .filter(userId::equals)
+                .flatMap(userRepository::findByEmail)
+                .isPresent();
+    }
+
+    private boolean checkUserCheck() {
+        return SecurityUtil.getCurrentUserName()
+                .flatMap(userRepository::findByEmail)
+                .isPresent();
+    }
+
+    private boolean roleCheck(String userId) {
+        return userRepository.findByEmail(userId).filter(item -> item.getRole().equals(Role.ROLE_MASTER.code())).isPresent();
+    }
+
+    private boolean roleCheck() {
+        return SecurityUtil.getCurrentUserName()
+                .flatMap(userRepository::findByEmail)
+                .map(user -> user.getRole().equals(Role.ROLE_MASTER.code()))
+                .orElse(false);
     }
 }
