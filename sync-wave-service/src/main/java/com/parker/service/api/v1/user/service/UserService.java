@@ -72,17 +72,23 @@ public class UserService {
 
     @Transactional
     public UserEntity updateUser(String userId, UserUpdateRequestDto userUpdateRequestDto) {
-        if (checkUserCheck(userId)) {
-            return userRepository.findByEmail(userId)
-                    .map(existingUser -> {
-                        Optional.ofNullable(userUpdateRequestDto.getPassword())
-                                .map(passwordEncoder::encode)// map: userUpdateRequestDto.getPassword()는 인코딩 후에 설정해야 하므로 map을 사용하여 중간 변환을 처리합니다.
-                                .ifPresent(existingUser::setPassword);
-                        return existingUser;
-                    }).orElseThrow(() -> new CustomException(FAIL_500.code(), messageSource.getMessage("user.not.found", null, Locale.getDefault()), HttpStatus.INTERNAL_SERVER_ERROR));
-        } else {
-            throw new CustomException(FAIL_500.code(), messageSource.getMessage("user.un.auth", null, Locale.getDefault()), HttpStatus.INTERNAL_SERVER_ERROR);
+        if (!checkUserCheck(userId)) {
+            throw new CustomException(FAIL_500.code(),
+                    messageSource.getMessage("user.un.auth", null, Locale.getDefault()),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
+        return userRepository.findByEmail(userId)
+                .map(existingUser -> {
+                    if (roleCheck(userId)) {
+                        updateCommonFields(existingUser, userUpdateRequestDto);
+                    }
+                    updatePasswordIfPresent(existingUser, userUpdateRequestDto);
+                    return existingUser;
+                })
+                .orElseThrow(() -> new CustomException(FAIL_500.code(),
+                        messageSource.getMessage("user.not.found", null, Locale.getDefault()),
+                        HttpStatus.INTERNAL_SERVER_ERROR));
     }
 
     @Transactional
@@ -136,5 +142,17 @@ public class UserService {
                 .flatMap(userRepository::findByEmail)
                 .map(user -> user.getRole().equals(Role.ROLE_MASTER.code()))
                 .orElse(false);
+    }
+
+    private void updateCommonFields(UserEntity existingUser, UserUpdateRequestDto dto) {
+        Optional.ofNullable(dto.getUserName()).ifPresent(existingUser::setUserName);
+        Optional.ofNullable(dto.getPhone()).ifPresent(existingUser::setPhone);
+        Optional.ofNullable(dto.getEmail()).ifPresent(existingUser::setEmail);
+    }
+
+    private void updatePasswordIfPresent(UserEntity existingUser, UserUpdateRequestDto dto) {
+        Optional.ofNullable(dto.getPassword())
+                .map(passwordEncoder::encode)
+                .ifPresent(existingUser::setPassword);
     }
 }
