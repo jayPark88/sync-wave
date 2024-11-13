@@ -27,7 +27,7 @@ spring:
 
 logging:
   level:
-    com.parker: debug
+    com.parker: debug # ERROR>WARN>INFO>DEBUG>TRACE 순서로 예를들어 INFO로 설정하면 WARN, ERROR까지 출력됨
 
 file:
   upload-path: sync-wave-service/src/main/resources/images
