@@ -1,5 +1,6 @@
 package com.parker.common.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -22,8 +23,10 @@ public class SchedulesDto {
     private String description;
 
     @NotNull(message = "{schedules.date.time.not.null}")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime startDateTime;
 
     @NotNull(message = "{schedules.date.time.not.null}")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime endDateTime;
 }
