@@ -90,7 +90,7 @@ public class SchedulesService {
             }
             return schedulesEntityList;
         }else{
-            return schedulesEntityList;
+            throw new CustomException(FAIL_400.code(), messageSource.getMessage("schedules.data.not.found", null, Locale.getDefault()), HttpStatus.BAD_REQUEST);
         }
     }
 
