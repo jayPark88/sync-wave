@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
  * ㄴ schedules
  *
  * <pre>
- * description : 일정 관리 테이블
+ * description : 일정 관리 테이블h
  * </pre>
  *
  * <pre>

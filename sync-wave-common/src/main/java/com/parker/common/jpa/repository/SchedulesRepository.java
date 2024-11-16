@@ -7,9 +7,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-public interface SchedulesRepository extends JpaRepository<SchedulesEntity, String> {
+public interface SchedulesRepository extends JpaRepository<SchedulesEntity, Long> {
     Optional<SchedulesEntity>findByTitle(String title);
-    Optional<SchedulesEntity>findById(Long id);
     Optional<SchedulesEntity>findByUserIdAndStartDateTime(Long userId, LocalDateTime startDateTime);
     List<SchedulesEntity> findByUserIdAndStartDateTimeBetween(Long userId, LocalDateTime startDateTime, LocalDateTime eneDateTime);
 }

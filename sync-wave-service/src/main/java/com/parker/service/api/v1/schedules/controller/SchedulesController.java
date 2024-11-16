@@ -13,7 +13,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-
 import java.util.List;
 
 import static com.parker.common.exception.enums.ResponseErrorCode.FAIL_400;
@@ -42,4 +41,15 @@ public class SchedulesController {
     public CommonResponse<List<SchedulesEntity>> getDetailScheduleList(SearchSchedulesDto searchSchedulesDto) {
         return new CommonResponse<>(schedulesService.getDetailScheduleList(searchSchedulesDto));
     }
+
+    @DeleteMapping("/{scheduleId}")
+    public CommonResponse<String> deleteScheduleData(@PathVariable("scheduleId") Long scheduleId) {
+        return new CommonResponse<>(schedulesService.deleteScheduleData(scheduleId));
+    }
+
+    @PatchMapping("/{scheduleId}")
+    public CommonResponse<SchedulesEntity> modifyScheduleInfo(@PathVariable("scheduleId") Long scheduleId, @Valid @RequestBody SchedulesDto schedulesDto) {
+        return new CommonResponse<>(schedulesService.modifyScheduleInfo(scheduleId, schedulesDto));
+    }
+
 }

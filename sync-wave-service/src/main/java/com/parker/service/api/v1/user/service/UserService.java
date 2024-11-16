@@ -120,7 +120,12 @@ public class UserService {
         }
     }
 
-    private boolean checkUserCheck(String userId) {
+    /**
+     * 사용자 체크 메서드
+     * @param userId
+     * @return
+     */
+    public boolean checkUserCheck(String userId) {
         return SecurityUtil.getCurrentUserName()
                 .filter(userId::equals)
                 .flatMap(userRepository::findByEmail)
