@@ -2,7 +2,6 @@ package com.parker.service.api.v1.todos.service;
 
 import com.parker.common.dto.request.TodosDto;
 import com.parker.common.dto.request.TodosDtoSearchDto;
-import com.parker.common.jpa.entity.SchedulesEntity;
 import com.parker.common.jpa.entity.TodosEntity;
 import com.parker.common.jpa.repository.TodosRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -114,23 +112,23 @@ class TodosServiceTest {
         Optional<TodosEntity> targetEntity = todosRepository.findById(saveResultEntity.get().getId());
 
         // when
-        if(targetEntity.isPresent()){
-            if(!ObjectUtils.isEmpty(requestTodosDto.getTask())){
+        if (targetEntity.isPresent()) {
+            if (!ObjectUtils.isEmpty(requestTodosDto.getTask())) {
                 log.info("task update {}", requestTodosDto.getTask());
                 targetEntity.get().setTask(requestTodosDto.getTask());
             }
 
-            if(!ObjectUtils.isEmpty(requestTodosDto.getIsCompleted())){
+            if (!ObjectUtils.isEmpty(requestTodosDto.getIsCompleted())) {
                 log.info("isCompleted update {}", requestTodosDto.getIsCompleted());
                 targetEntity.get().setIsCompleted(requestTodosDto.getIsCompleted());
             }
 
-            if(!ObjectUtils.isEmpty(requestTodosDto.getDueDate())){
+            if (!ObjectUtils.isEmpty(requestTodosDto.getDueDate())) {
                 log.info("dueDate update {}", requestTodosDto.getDueDate());
                 targetEntity.get().setDueDate(requestTodosDto.getDueDate());
             }
             todosRepository.save(targetEntity.get());
-        }else{
+        } else {
             Assertions.fail("데이터가 없습니다!");
         }
 
@@ -140,10 +138,10 @@ class TodosServiceTest {
         Optional<TodosEntity> finalTargetEntity = targetEntity;
 
         Assertions.assertAll(
-                () ->Assertions.assertTrue(finalTargetEntity.isPresent()),
-                () ->Assertions.assertEquals(requestTodosDto.getTask(), finalTargetEntity.get().getTask()),
-                () ->Assertions.assertEquals(requestTodosDto.getDueDate(), finalTargetEntity.get().getDueDate()),
-                () ->Assertions.assertEquals(requestTodosDto.getIsCompleted(), finalTargetEntity.get().getIsCompleted())
+                () -> Assertions.assertTrue(finalTargetEntity.isPresent()),
+                () -> Assertions.assertEquals(requestTodosDto.getTask(), finalTargetEntity.get().getTask()),
+                () -> Assertions.assertEquals(requestTodosDto.getDueDate(), finalTargetEntity.get().getDueDate()),
+                () -> Assertions.assertEquals(requestTodosDto.getIsCompleted(), finalTargetEntity.get().getIsCompleted())
         );
     }
 
@@ -154,11 +152,11 @@ class TodosServiceTest {
         Long todosId = saveResultEntity.get().getId();
 
         // when
-        Optional<TodosEntity>targetEntity = todosRepository.findById(todosId);
+        Optional<TodosEntity> targetEntity = todosRepository.findById(todosId);
 
-        if(targetEntity.isPresent()){
+        if (targetEntity.isPresent()) {
             todosRepository.delete(targetEntity.get());
-        }else{
+        } else {
             Assertions.fail("데이터가 없습니다!");
         }
 
