@@ -56,18 +56,16 @@ class SchedulesServiceTest {
         // given
         Optional<SchedulesEntity> schedulesEntity = saveSchedule();
 
-        SchedulesDto schedulesDto = SchedulesDto.builder().title("토이프로젝트 개발").build();
+        SchedulesDto requestSchedulesDto = SchedulesDto.builder().title("토이프로젝트 개발").build();
 
         // when
-        Optional<SchedulesEntity> optionalSchedulesEntity = schedulesRepository.findByTitle(schedulesDto.getTitle());
+        Optional<SchedulesEntity> optionalSchedulesEntity = schedulesRepository.findByTitle(requestSchedulesDto.getTitle());
 
         // then
         Assertions.assertAll(
                 () -> assertTrue(schedulesEntity.isPresent()),
-                () -> assertEquals(schedulesDto.getTitle(), schedulesEntity.get().getTitle())
+                () -> assertEquals(requestSchedulesDto.getTitle(), schedulesEntity.get().getTitle())
         );
-
-
     }
 
     @Test
