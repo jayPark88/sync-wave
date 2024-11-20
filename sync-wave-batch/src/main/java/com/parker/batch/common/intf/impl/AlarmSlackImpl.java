@@ -1,6 +1,6 @@
-package com.parker.common.intf.impl;
+package com.parker.batch.common.intf.impl;
 
-import com.parker.common.intf.AlarmInterface;
+import com.parker.batch.common.intf.AlarmInterface;
 import com.parker.common.resonse.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

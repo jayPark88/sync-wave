@@ -1,4 +1,7 @@
-service:
-  interface:
-    sample:
-      url: https://randomuser.me/
+###############################################################
+#######################Slack###################################
+notification:
+  slack:
+    webhook:
+      url: https://hooks.slack.com/services/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
+

@@ -1,4 +1,4 @@
-package com.parker.common.intf;
+package com.parker.batch.common.intf;
 
 
 import com.parker.common.resonse.CommonResponse;
