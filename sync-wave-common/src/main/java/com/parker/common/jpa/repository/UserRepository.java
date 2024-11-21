@@ -21,6 +21,6 @@ import java.util.Optional;
  * @author parker
  * @version 1.0
  */
-public interface UserRepository extends JpaRepository<UserEntity, String> {
+public interface UserRepository extends JpaRepository<UserEntity, Long> {
     Optional<UserEntity> findByEmail(String email);
 }

@@ -11,4 +11,5 @@ public interface SchedulesRepository extends JpaRepository<SchedulesEntity, Long
     Optional<SchedulesEntity>findByTitle(String title);
     Optional<SchedulesEntity>findByUserIdAndStartDateTime(Long userId, LocalDateTime startDateTime);
     List<SchedulesEntity> findByUserIdAndStartDateTimeBetween(Long userId, LocalDateTime startDateTime, LocalDateTime eneDateTime);
+    List<SchedulesEntity> findByStartDateTimeBetween(LocalDateTime startDateTime, LocalDateTime endDateTime);
 }

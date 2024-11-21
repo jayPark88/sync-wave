@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
@@ -18,6 +19,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
+@Commit
 @Transactional
 @SpringBootTest
 class SchedulesServiceTest {
@@ -32,7 +34,7 @@ class SchedulesServiceTest {
         schedulesDto = SchedulesDto.builder()
                 .title("토이프로젝트 개발")
                 .description("얼른 완성 시켜서 포트폴리오에 사용하자!")
-                .startDateTime(LocalDateTime.now())
+                .startDateTime(LocalDateTime.now().plusHours(1))
                 .endDateTime(LocalDateTime.now().plusDays(10))
                 .build();
     }
