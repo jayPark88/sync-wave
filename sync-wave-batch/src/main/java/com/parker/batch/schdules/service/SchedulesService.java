@@ -5,6 +5,7 @@ import com.parker.batch.common.intf.AlarmInterface;
 import com.parker.common.jpa.entity.SchedulesEntity;
 import com.parker.common.jpa.entity.UserEntity;
 import com.parker.common.jpa.repository.SchedulesRepository;
+import com.parker.common.jpa.repository.TodosRepository;
 import com.parker.common.jpa.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,10 +20,14 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class SchedulesService {
     private final SchedulesRepository schedulesRepository;
+    private final TodosRepository todosRepository;
     private final UserRepository userRepository;
 
     private final AlarmInterface alarmSlackImpl;
 
+    /**
+     * Schedule 알림 배치
+     */
     public void alertUsersAboutScheduleInOneHourTask() {
         log.info("지금 시간 기준으로 한시간 이내 스케쥴이 있는 리스트 조회");
         List<SchedulesEntity> schedulesEntityList = schedulesRepository.findByStartDateTimeBetween(LocalDateTime.now(),  LocalDateTime.now().plusHours(1));
@@ -35,6 +40,10 @@ public class SchedulesService {
                 alarmSlackImpl.sendMsg(optionalUserEntity.get().getEmail(), generateAlaramMsg(item, optionalUserEntity));
             }
         });
+    }
+
+    public void alertUsersAboutTodosReminderTask(){
+        log.info("금일 기준 등록된 Todo List 기준 완료되지 않은 것 조회");
     }
 
     /**

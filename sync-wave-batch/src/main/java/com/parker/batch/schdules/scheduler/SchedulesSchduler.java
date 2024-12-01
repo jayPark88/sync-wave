@@ -16,4 +16,7 @@ public class SchedulesSchduler {
     void alertUsersAboutScheduleInOneHourTask() {
         schedulesService.alertUsersAboutScheduleInOneHourTask();
     }
+
+    @Scheduled(cron = "0 0 9,18 * * *")
+    void alertUsersAboutTodosReminderTask(){}
 }
