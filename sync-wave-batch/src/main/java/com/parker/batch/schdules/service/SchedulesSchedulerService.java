@@ -5,7 +5,6 @@ import com.parker.batch.common.intf.AlarmInterface;
 import com.parker.common.jpa.entity.SchedulesEntity;
 import com.parker.common.jpa.entity.UserEntity;
 import com.parker.common.jpa.repository.SchedulesRepository;
-import com.parker.common.jpa.repository.TodosRepository;
 import com.parker.common.jpa.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,9 +17,8 @@ import java.util.Optional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class SchedulesService {
+public class SchedulesSchedulerService {
     private final SchedulesRepository schedulesRepository;
-    private final TodosRepository todosRepository;
     private final UserRepository userRepository;
 
     private final AlarmInterface alarmSlackImpl;
@@ -30,24 +28,19 @@ public class SchedulesService {
      */
     public void alertUsersAboutScheduleInOneHourTask() {
         log.info("지금 시간 기준으로 한시간 이내 스케쥴이 있는 리스트 조회");
-        List<SchedulesEntity> schedulesEntityList = schedulesRepository.findByStartDateTimeBetween(LocalDateTime.now(),  LocalDateTime.now().plusHours(1));
+        List<SchedulesEntity> schedulesEntityList = schedulesRepository.findByStartDateTimeBetween(LocalDateTime.now(), LocalDateTime.now().plusHours(1));
         schedulesEntityList.stream().parallel().forEach(item -> {
             log.info("Thread: {} 처리 중: {}", Thread.currentThread().getName(), item);
             Optional<UserEntity> optionalUserEntity = userRepository.findById(item.getUserId());
-            log.info("알림 대상자 조회 {} ",optionalUserEntity);
-            if(optionalUserEntity.isPresent()){
+            log.info("알림 대상자 조회 {} ", optionalUserEntity);
+            if (optionalUserEntity.isPresent()) {
                 log.info("알림 발송 요청! 🚀");
                 alarmSlackImpl.sendMsg(optionalUserEntity.get().getEmail(), generateAlaramMsg(item, optionalUserEntity));
             }
         });
     }
 
-    public void alertUsersAboutTodosReminderTask(){
-        log.info("금일 기준 등록된 Todo List 기준 완료되지 않은 것 조회");
-    }
-
     /**
-     *
      * @param schedulesEntity
      * @param optionalUserEntity
      * @return

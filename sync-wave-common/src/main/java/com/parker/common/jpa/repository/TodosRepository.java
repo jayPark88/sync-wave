@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface TodosRepository extends JpaRepository<TodosEntity, Long> {
     Optional<TodosEntity>findByTask(String task);
     List<TodosEntity> findByDueDate(LocalDate dueDate);
+    List<TodosEntity> findByDueDateGreaterThanEqual(LocalDate dueDate);
 }

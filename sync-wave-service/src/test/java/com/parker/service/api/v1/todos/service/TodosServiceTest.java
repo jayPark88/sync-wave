@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
@@ -21,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
+@Commit
 @Transactional
 @SpringBootTest
 class TodosServiceTest {
@@ -40,7 +42,7 @@ class TodosServiceTest {
     }
 
     @Test
-    void createSchedules() {
+    void createTodos() {
         // when
         Optional<TodosEntity> optionalTodosEntity = saveTodos();
 
@@ -80,7 +82,7 @@ class TodosServiceTest {
                         .build();
 
         // when
-        List<TodosEntity> todosEntityList = todosRepository.findByDueDate(todosDtoSearchDto.getDueDate());
+        List<TodosEntity> todosEntityList = todosRepository.findByDueDateGreaterThanEqual(todosDtoSearchDto.getDueDate());
 
         if (!ObjectUtils.isEmpty(todosDtoSearchDto.getTask())) {
             todosEntityList = todosEntityList.stream().filter(item -> item.getTask().contains(todosDtoSearchDto.getTask())).toList();

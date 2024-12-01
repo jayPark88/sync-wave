@@ -1,6 +1,6 @@
 package com.parker.batch.schdules.scheduler;
 
-import com.parker.batch.schdules.service.SchedulesService;
+import com.parker.batch.schdules.service.SchedulesSchedulerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -10,13 +10,10 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class SchedulesSchduler {
-    private final SchedulesService schedulesService;
+    private final SchedulesSchedulerService schedulesSchedulerService;
 
     @Scheduled(cron = "0 0 * * * *")
     void alertUsersAboutScheduleInOneHourTask() {
-        schedulesService.alertUsersAboutScheduleInOneHourTask();
+        schedulesSchedulerService.alertUsersAboutScheduleInOneHourTask();
     }
-
-    @Scheduled(cron = "0 0 9,18 * * *")
-    void alertUsersAboutTodosReminderTask(){}
 }
