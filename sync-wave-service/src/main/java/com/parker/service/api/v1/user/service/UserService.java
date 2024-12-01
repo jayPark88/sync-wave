@@ -94,7 +94,7 @@ public class UserService {
     @Transactional
     public String deleteUserInfo(String userId) {
         if (checkUserCheck(userId) && roleCheck(userId)) {
-            userRepository.deleteById(userId);
+            userRepository.deleteByEmail(userId);
             return userId + " deleted!";
         } else {
             throw new CustomException(FAIL_500.code(), messageSource.getMessage("user.un.auth", null, Locale.getDefault()), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -114,7 +114,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public Optional<UserEntity> getUserInfo(String userId) {
         if (checkUserCheck(userId)) {
-            return userRepository.findById(userId);
+            return userRepository.findByEmail(userId);
         } else {
             throw new CustomException(FAIL_500.code(), messageSource.getMessage("user.un.auth", null, Locale.getDefault()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
