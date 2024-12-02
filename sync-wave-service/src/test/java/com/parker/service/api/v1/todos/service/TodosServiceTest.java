@@ -2,6 +2,7 @@ package com.parker.service.api.v1.todos.service;
 
 import com.parker.common.dto.request.TodosDto;
 import com.parker.common.dto.request.TodosDtoSearchDto;
+import com.parker.common.enums.TodoStatus;
 import com.parker.common.jpa.entity.TodosEntity;
 import com.parker.common.jpa.repository.TodosRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -15,11 +16,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 @Commit
@@ -44,13 +46,13 @@ class TodosServiceTest {
     @Test
     void createTodos() {
         // when
-        Optional<TodosEntity> optionalTodosEntity = saveTodos();
+        List<TodosEntity> todosEntityList = saveTodos(todosDto.getDueDate());
 
         // then
         Assertions.assertAll(
-                () -> assertTrue(optionalTodosEntity.isPresent()),
-                () -> assertEquals(todosDto.getTask(), optionalTodosEntity.get().getTask()),
-                () -> assertEquals(todosDto.getDueDate(), optionalTodosEntity.get().getDueDate())
+                () -> assertFalse(todosEntityList.isEmpty()),
+                () -> assertEquals(todosEntityList.stream().findFirst().get().getTask(), todosDto.getTask()),
+                () -> assertEquals(todosEntityList.stream().findFirst().get().getDueDate(), todosDto.getDueDate())
         );
     }
 
@@ -78,7 +80,7 @@ class TodosServiceTest {
                 TodosDtoSearchDto.builder()
                         .task("매일 저녁 toyProject!!")
                         .dueDate(LocalDate.now().plusDays(100))
-                        .isCompleted('N')
+                        .status(TodoStatus.PENDING.code())
                         .build();
 
         // when
@@ -88,15 +90,15 @@ class TodosServiceTest {
             todosEntityList = todosEntityList.stream().filter(item -> item.getTask().contains(todosDtoSearchDto.getTask())).toList();
         }
 
-        if (!ObjectUtils.isEmpty(todosDtoSearchDto.getIsCompleted())) {
-            todosEntityList = todosEntityList.stream().filter(item -> item.getIsCompleted() == todosDtoSearchDto.getIsCompleted()).toList();
+        if (!ObjectUtils.isEmpty(todosDtoSearchDto.getStatus())) {
+            todosEntityList = todosEntityList.stream().filter(item -> Objects.equals(item.getStatus(), todosDtoSearchDto.getStatus())).toList();
         }
 
         // then
         List<TodosEntity> finalTodosEntityList = todosEntityList;
         Assertions.assertAll(
                 () -> Assertions.assertFalse(finalTodosEntityList.isEmpty()),
-                () -> Assertions.assertTrue(finalTodosEntityList.stream().anyMatch(item -> item.getIsCompleted() == 'N')),
+                () -> Assertions.assertTrue(finalTodosEntityList.stream().anyMatch(item -> Objects.equals(item.getStatus(), TodoStatus.PENDING.code()))),
                 () -> Assertions.assertTrue(finalTodosEntityList.stream().anyMatch(item -> item.getTask().equals(todosDtoSearchDto.getTask())))
         );
     }
@@ -108,7 +110,7 @@ class TodosServiceTest {
         TodosDto requestTodosDto = TodosDto.builder()
                 .task("매일 저녁 푸쉬업!!")
                 .dueDate(LocalDate.now().plusDays(10))
-                .isCompleted('Y')
+                .status(TodoStatus.PENDING.code())
                 .build();
 
         Optional<TodosEntity> targetEntity = todosRepository.findById(saveResultEntity.get().getId());
@@ -120,9 +122,9 @@ class TodosServiceTest {
                 targetEntity.get().setTask(requestTodosDto.getTask());
             }
 
-            if (!ObjectUtils.isEmpty(requestTodosDto.getIsCompleted())) {
-                log.info("isCompleted update {}", requestTodosDto.getIsCompleted());
-                targetEntity.get().setIsCompleted(requestTodosDto.getIsCompleted());
+            if (!ObjectUtils.isEmpty(requestTodosDto.getStatus())) {
+                log.info("isCompleted update {}", requestTodosDto.getStatus());
+                targetEntity.get().setStatus(requestTodosDto.getStatus());
             }
 
             if (!ObjectUtils.isEmpty(requestTodosDto.getDueDate())) {
@@ -143,7 +145,7 @@ class TodosServiceTest {
                 () -> Assertions.assertTrue(finalTargetEntity.isPresent()),
                 () -> Assertions.assertEquals(requestTodosDto.getTask(), finalTargetEntity.get().getTask()),
                 () -> Assertions.assertEquals(requestTodosDto.getDueDate(), finalTargetEntity.get().getDueDate()),
-                () -> Assertions.assertEquals(requestTodosDto.getIsCompleted(), finalTargetEntity.get().getIsCompleted())
+                () -> Assertions.assertEquals(requestTodosDto.getStatus(), finalTargetEntity.get().getStatus())
         );
     }
 
@@ -171,11 +173,36 @@ class TodosServiceTest {
         return Optional.of(todosRepository.save(
                         TodosEntity.builder()
                                 .task(todosDto.getTask())
-                                .isCompleted('N')
+                                .status(TodoStatus.PENDING.code())
                                 .dueDate(todosDto.getDueDate())
                                 .userId(1L)
                                 .build()
                 )
         );
+    }
+
+    private List<TodosEntity> saveTodos(LocalDate dueDate) {
+        List<TodosEntity> todosEntityList = new ArrayList<>();
+
+        LocalDate currentDate = LocalDate.now();
+
+        int i = 0;
+
+        while (!currentDate.isAfter(dueDate)) {
+            currentDate = currentDate.plusDays(1);
+
+            todosEntityList.add(TodosEntity.builder()
+                    .task(todosDto.getTask())
+                    .startDate(LocalDate.now().plusDays(i))
+                    .status(TodoStatus.PENDING.code())
+                    .dueDate(dueDate)
+                    .userId(1L)
+                    .build());
+            i += 1;
+        }
+
+        todosRepository.saveAll(todosEntityList);
+
+        return todosEntityList;
     }
 }

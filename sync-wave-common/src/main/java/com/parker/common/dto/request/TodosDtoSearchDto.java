@@ -12,7 +12,8 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class TodosDtoSearchDto {
     private String task;
-    private char isCompleted;
+    private LocalDate startDate;
+    private String status;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dueDate;
 }
