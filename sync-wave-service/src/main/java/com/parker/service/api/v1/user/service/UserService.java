@@ -1,8 +1,8 @@
 package com.parker.service.api.v1.user.service;
 
 
-import com.parker.common.dto.request.UserDto;
-import com.parker.common.dto.request.UserUpdateRequestDto;
+import com.parker.service.api.v1.user.dto.UserDto;
+import com.parker.service.api.v1.user.dto.UserUpdateRequestDto;
 import com.parker.common.enums.Role;
 import com.parker.common.enums.UserStatus;
 import com.parker.common.exception.CustomException;

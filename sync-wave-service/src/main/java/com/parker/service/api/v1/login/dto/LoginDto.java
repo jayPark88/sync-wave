@@ -1,4 +1,4 @@
-package com.parker.common.dto;
+package com.parker.service.api.v1.login.dto;
 
 
 import jakarta.validation.constraints.NotNull;

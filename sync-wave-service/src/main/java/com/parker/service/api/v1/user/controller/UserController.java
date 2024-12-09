@@ -1,8 +1,8 @@
 package com.parker.service.api.v1.user.controller;
 
 import com.parker.service.api.v1.user.service.UserService;
-import com.parker.common.dto.request.UserDto;
-import com.parker.common.dto.request.UserUpdateRequestDto;
+import com.parker.service.api.v1.user.dto.UserDto;
+import com.parker.service.api.v1.user.dto.UserUpdateRequestDto;
 import com.parker.common.exception.CustomException;
 import com.parker.common.jpa.entity.UserEntity;
 import com.parker.common.resonse.CommonResponse;

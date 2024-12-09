@@ -1,7 +1,7 @@
 package com.parker.service.api.v1.login.controller;
 
 import com.parker.service.api.v1.login.service.AuthService;
-import com.parker.common.dto.LoginDto;
+import com.parker.service.api.v1.login.dto.LoginDto;
 import com.parker.common.exception.CustomException;
 import com.parker.common.resonse.CommonResponse;
 import lombok.RequiredArgsConstructor;

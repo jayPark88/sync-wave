@@ -1,7 +1,7 @@
 package com.parker.service.api.v1.file.service;
 
 
-import com.parker.common.dto.request.FileDto;
+import com.parker.service.api.v1.file.dto.FileDto;
 import com.parker.common.exception.CustomException;
 import com.parker.common.jpa.entity.FileEntity;
 import com.parker.common.jpa.repository.FileRepository;

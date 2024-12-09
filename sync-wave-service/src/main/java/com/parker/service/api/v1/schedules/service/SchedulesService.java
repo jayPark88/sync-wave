@@ -1,7 +1,7 @@
 package com.parker.service.api.v1.schedules.service;
 
-import com.parker.common.dto.request.SchedulesDto;
-import com.parker.common.dto.request.SearchSchedulesDto;
+import com.parker.service.api.v1.schedules.dto.SchedulesDto;
+import com.parker.service.api.v1.schedules.dto.SearchSchedulesDto;
 import com.parker.common.exception.CustomException;
 import com.parker.common.jpa.entity.SchedulesEntity;
 import com.parker.common.jpa.entity.UserEntity;
