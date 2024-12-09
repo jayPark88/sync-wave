@@ -1,7 +1,7 @@
 package com.parker.service.api.v1.todos.service;
 
-import com.parker.common.dto.request.TodosDto;
-import com.parker.common.dto.request.TodosDtoSearchDto;
+import com.parker.service.api.v1.todos.dto.TodosDto;
+import com.parker.service.api.v1.todos.dto.TodosDtoSearchDto;
 import com.parker.common.enums.TodoStatus;
 import com.parker.common.jpa.entity.TodosEntity;
 import com.parker.common.jpa.repository.TodosRepository;
@@ -150,7 +150,7 @@ class TodosServiceTest {
     }
 
     @Test
-    void deleteScheduleData() {
+    void deleteTodoData() {
         // given
         Optional<TodosEntity> saveResultEntity = saveTodos();
         Long todosId = saveResultEntity.get().getId();

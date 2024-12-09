@@ -1,41 +1,103 @@
 package com.parker.service.api.v1.todos.service;
 
-import com.parker.common.dto.request.TodosDto;
-import com.parker.common.dto.request.TodosDtoSearchDto;
+import com.parker.common.enums.TodoStatus;
+import com.parker.common.exception.CustomException;
 import com.parker.common.jpa.entity.TodosEntity;
+import com.parker.common.jpa.repository.TodosRepository;
+import com.parker.service.api.v1.todos.dto.TodosDto;
+import com.parker.service.api.v1.todos.dto.TodosDtoSearchDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.MessageSource;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
+
+import static com.parker.common.exception.enums.ResponseErrorCode.FAIL_400;
+import static com.parker.common.exception.enums.ResponseErrorCode.FAIL_500;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class TodosService {
-    //todo: 11/18일 개발 예정, junit 부터 😎
-    //todo: createTodo
-    public TodosEntity createSchedules(TodosDto todosDto) {
-        return null;
+
+    private TodosRepository todosRepository;
+    private final MessageSource messageSource;
+
+    public List<TodosEntity> createTodos(TodosDto todosDto) {
+        List<TodosEntity> todosEntityList = new ArrayList<>();
+
+        LocalDate currentDate = LocalDate.now();
+
+        int i = 0;
+
+        while (!currentDate.isAfter(todosDto.getDueDate())) {
+            currentDate = currentDate.plusDays(1);
+
+            todosEntityList.add(TodosEntity.builder()
+                    .task(todosDto.getTask())
+                    .startDate(LocalDate.now().plusDays(i))
+                    .status(TodoStatus.PENDING.code())
+                    .dueDate(todosDto.getDueDate())
+                    .userId(1L)
+                    .build());
+            i += 1;
+        }
+
+        todosRepository.saveAll(todosEntityList);
+
+        return todosEntityList;
     }
 
-    //todo: readTodo
     public TodosEntity getDetailTodoDetailInfo(Long todosId) {
-        return null;
+        return todosRepository.findById(todosId).orElseThrow(() -> new CustomException(FAIL_500.code(), messageSource.getMessage("todo.info.not.found", null, Locale.getDefault()), HttpStatus.INTERNAL_SERVER_ERROR));
     }
 
-    //todo: readTodo
     public List<TodosEntity> getDetailTodosList(TodosDtoSearchDto todosDtoSearchDto) {
-        return null;
+        return todosRepository.findByDueDateGreaterThanEqual(todosDtoSearchDto.getDueDate());
     }
 
-    //todo: updateTodo
-    public TodosEntity modifyTodoInfo(Long todosId, TodosDtoSearchDto todosDtoSearchDto) {
-        return null;
+    public TodosEntity modifyTodoInfo(Long todosId, TodosDto todosDto) {
+        Optional<TodosEntity> targetEntity = todosRepository.findById(todosId);
+
+        if (targetEntity.isPresent()) {
+            if (!ObjectUtils.isEmpty(todosDto.getTask())) {
+                log.info("task update {}", todosDto.getTask());
+                targetEntity.get().setTask(todosDto.getTask());
+            }
+
+            if (!ObjectUtils.isEmpty(todosDto.getStatus())) {
+                log.info("isCompleted update {}", todosDto.getStatus());
+                targetEntity.get().setStatus(todosDto.getStatus());
+            }
+
+            if (!ObjectUtils.isEmpty(todosDto.getDueDate())) {
+                log.info("dueDate update {}", todosDto.getDueDate());
+                targetEntity.get().setDueDate(todosDto.getDueDate());
+            }
+            return todosRepository.save(targetEntity.get());
+        } else {
+            throw new CustomException(FAIL_500.code(), messageSource.getMessage("todo.info.not.found", null, Locale.getDefault()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
-    //todo: deleteTodo
-    public String deleteScheduleData(Long todosId){
-        return null;
+    public String deleteTodoData(Long todosId) {
+        try {
+            todosRepository.deleteById(todosId);
+            return messageSource.getMessage("schedules.delete.success", null, Locale.getDefault());
+        } catch (EmptyResultDataAccessException e) {
+            // 해당 ID로 찾을 수 없을 때 처리
+            throw new CustomException(FAIL_400.code(), messageSource.getMessage("todo.info.not.found", null, Locale.getDefault()), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            // 기타 예외 처리
+            throw new CustomException(FAIL_500.code(), messageSource.getMessage("http.status.inter", null, Locale.getDefault()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

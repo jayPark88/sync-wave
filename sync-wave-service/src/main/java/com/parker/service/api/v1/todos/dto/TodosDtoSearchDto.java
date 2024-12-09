@@ -1,4 +1,4 @@
-package com.parker.common.dto.request;
+package com.parker.service.api.v1.todos.dto;
 
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
