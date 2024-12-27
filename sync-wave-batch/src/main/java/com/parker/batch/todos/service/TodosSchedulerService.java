@@ -1,6 +1,7 @@
 package com.parker.batch.todos.service;
 
 import com.parker.batch.common.intf.AlarmInterface;
+import com.parker.common.enums.TodoStatus;
 import com.parker.common.jpa.entity.TodosEntity;
 import com.parker.common.jpa.entity.UserEntity;
 import com.parker.common.jpa.repository.TodosRepository;
@@ -29,7 +30,7 @@ public class TodosSchedulerService {
 
         log.info("todosEntityList 중 중복 Id 제거");
         List<TodosEntity> removeDuplicateList =
-                todosEntityList.stream().filter(item -> item.getIsCompleted()=='N').collect(Collectors.toMap( // toMap을 사용해 스트림 데이터를 Map으로 변환
+                todosEntityList.stream().filter(item -> item.getStatus().equals(TodoStatus.PENDING.code())).collect(Collectors.toMap( // toMap을 사용해 스트림 데이터를 Map으로 변환
                         TodosEntity::getUserId, // 중복 제거 기준 필드, Map의 키로 사용
                         todosEntity -> todosEntity, // Map의 값은 TodosEntity 객체 자체로 설정
                         (existing, replacement) -> replacement // 중복 키 발생 시 기존 값 대신 새 값으로 교체
