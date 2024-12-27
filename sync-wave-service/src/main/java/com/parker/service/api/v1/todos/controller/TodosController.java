@@ -43,9 +43,9 @@ public class TodosController {
         return new CommonResponse<>(todosService.getDetailTodosList(todosDtoSearchDto));
     }
 
-    @PatchMapping("/{todosId}")
-    public CommonResponse<TodosEntity> modifyTodoInfo(@PathVariable("todosId") Long todosId, @Valid @RequestBody TodosDto todosDto) {
-        return new CommonResponse<>(todosService.modifyTodoInfo(todosId, todosDto));
+    @PatchMapping
+    public CommonResponse<TodosEntity> modifyTodoInfo(@Valid @RequestBody TodosDto todosDto) {
+        return new CommonResponse<>(todosService.modifyTodoInfo(todosDto));
     }
 
     @DeleteMapping("/{todosId}")

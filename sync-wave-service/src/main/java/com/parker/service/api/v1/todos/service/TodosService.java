@@ -64,8 +64,8 @@ public class TodosService {
         return todosRepository.findByDueDateGreaterThanEqual(todosDtoSearchDto.getDueDate());
     }
 
-    public TodosEntity modifyTodoInfo(Long todosId, TodosDto todosDto) {
-        Optional<TodosEntity> targetEntity = todosRepository.findById(todosId);
+    public TodosEntity modifyTodoInfo(TodosDto todosDto) {
+        Optional<TodosEntity> targetEntity = todosRepository.findById(todosDto.getId());
 
         if (targetEntity.isPresent()) {
             if (!ObjectUtils.isEmpty(todosDto.getTask())) {
