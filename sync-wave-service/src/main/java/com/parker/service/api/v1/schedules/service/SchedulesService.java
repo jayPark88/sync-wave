@@ -40,7 +40,7 @@ public class SchedulesService {
      * @return
      */
     public SchedulesEntity createSchedules(SchedulesDto schedulesDto) {
-        Long userId = getUserId();
+        Long userId = userService.getUserId();
         if (checkDuplicateSchedules(schedulesDto, userId)) {
             return schedulesRepository.save(SchedulesEntity.builder()
                     .title(schedulesDto.getTitle())
@@ -78,7 +78,7 @@ public class SchedulesService {
      * @return
      */
     public List<SchedulesEntity> getDetailScheduleList(SearchSchedulesDto searchSchedulesDto) {
-        Long userId = getUserId();
+        Long userId = userService.getUserId();
         List<SchedulesEntity> schedulesEntityList = schedulesRepository.findByUserIdAndStartDateTimeBetween(userId, searchSchedulesDto.getStartDate().atStartOfDay(), searchSchedulesDto.getEndDate().atTime(23, 59, 59));
 
         if (!schedulesEntityList.isEmpty()) {
@@ -137,20 +137,7 @@ public class SchedulesService {
         }
     }
 
-    /**
-     * User Seq Id를 찾아주는 기능
-     *
-     * @return
-     */
-    private Long getUserId() {
-        if (SecurityUtil.getCurrentUserName().isPresent()) {
-            Optional<UserEntity> userEntity = userRepository.findByEmail(SecurityUtil.getCurrentUserName().get());
-            if (userEntity.isPresent()) {
-                return userEntity.get().getId();
-            }
-        }
-        return 0L;
-    }
+
 
     /**
      * 중복 스케쥴 체크

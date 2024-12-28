@@ -23,7 +23,7 @@ import static com.parker.common.exception.enums.ResponseErrorCode.FAIL_400;
 @RequiredArgsConstructor
 public class TodosController {
 
-    private TodosService todosService;
+    private final TodosService todosService;
 
     @PostMapping
     public CommonResponse<List<TodosEntity>> createTodos(@Valid @RequestBody TodosDto todosDto, BindingResult bindingResult) {
@@ -38,7 +38,7 @@ public class TodosController {
         return new CommonResponse<>(todosService.getDetailTodoDetailInfo(todosId));
     }
 
-    @GetMapping("/{todosId}")
+    @GetMapping
     public CommonResponse<List<TodosEntity>> getDetailTodosList(TodosDtoSearchDto todosDtoSearchDto) {
         return new CommonResponse<>(todosService.getDetailTodosList(todosDtoSearchDto));
     }

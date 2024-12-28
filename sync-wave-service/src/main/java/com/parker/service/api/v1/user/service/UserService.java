@@ -132,6 +132,21 @@ public class UserService {
                 .isPresent();
     }
 
+    /**
+     * User Seq Id를 찾아주는 기능
+     *
+     * @return
+     */
+    public Long getUserId() {
+        if (SecurityUtil.getCurrentUserName().isPresent()) {
+            Optional<UserEntity> userEntity = userRepository.findByEmail(SecurityUtil.getCurrentUserName().get());
+            if (userEntity.isPresent()) {
+                return userEntity.get().getId();
+            }
+        }
+        return 0L;
+    }
+
     private boolean checkUserCheck() {
         return SecurityUtil.getCurrentUserName()
                 .flatMap(userRepository::findByEmail)

@@ -11,4 +11,6 @@ public interface TodosRepository extends JpaRepository<TodosEntity, Long> {
     Optional<TodosEntity>findByTask(String task);
     List<TodosEntity> findByDueDate(LocalDate dueDate);
     List<TodosEntity> findByDueDateGreaterThanEqual(LocalDate dueDate);
+    List<TodosEntity> findByUserIdAndDueDateGreaterThanEqual(Long userId, LocalDate dueDate);
+    List<TodosEntity> findByUserIdAndDueDateBetween(Long userId, LocalDate startDate, LocalDate endDate);
 }

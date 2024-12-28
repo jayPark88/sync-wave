@@ -2,9 +2,11 @@ package com.parker.common.model;
 
 import com.parker.common.intf.ChangableToFromEntity;
 import com.parker.common.jpa.entity.SchedulesEntity;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 
+@Data
 public class SchedulesModel implements ChangableToFromEntity<SchedulesEntity> {
     private Long id; // 일정 고유 ID
     private String title; // 일정 제목

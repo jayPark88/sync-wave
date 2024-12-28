@@ -6,6 +6,7 @@ import com.parker.common.jpa.entity.TodosEntity;
 import com.parker.common.jpa.repository.TodosRepository;
 import com.parker.service.api.v1.todos.dto.TodosDto;
 import com.parker.service.api.v1.todos.dto.TodosDtoSearchDto;
+import com.parker.service.api.v1.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
@@ -30,6 +31,7 @@ public class TodosService {
 
     private TodosRepository todosRepository;
     private final MessageSource messageSource;
+    private final UserService userService;
 
     public List<TodosEntity> createTodos(TodosDto todosDto) {
         List<TodosEntity> todosEntityList = new ArrayList<>();
@@ -61,7 +63,8 @@ public class TodosService {
     }
 
     public List<TodosEntity> getDetailTodosList(TodosDtoSearchDto todosDtoSearchDto) {
-        return todosRepository.findByDueDateGreaterThanEqual(todosDtoSearchDto.getDueDate());
+        Long userId = userService.getUserId();
+        return todosRepository.findByUserIdAndDueDateGreaterThanEqual(userId, todosDtoSearchDto.getDueDate());
     }
 
     public TodosEntity modifyTodoInfo(TodosDto todosDto) {

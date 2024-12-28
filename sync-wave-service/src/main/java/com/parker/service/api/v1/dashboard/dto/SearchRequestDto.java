@@ -7,8 +7,7 @@ import java.time.LocalDate;
 
 @Data
 public class SearchRequestDto {
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate startDate;
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate endDate;
+    private String userId;
+    @DateTimeFormat(pattern = "yyyy-MM")
+    private LocalDate localDate;
 }
