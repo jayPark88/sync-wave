@@ -29,7 +29,7 @@ import static com.parker.common.exception.enums.ResponseErrorCode.FAIL_500;
 @RequiredArgsConstructor
 public class TodosService {
 
-    private TodosRepository todosRepository;
+    private final TodosRepository todosRepository;
     private final MessageSource messageSource;
     private final UserService userService;
 

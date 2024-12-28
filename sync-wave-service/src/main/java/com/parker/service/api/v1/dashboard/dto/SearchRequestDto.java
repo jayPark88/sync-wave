@@ -8,6 +8,6 @@ import java.time.LocalDate;
 @Data
 public class SearchRequestDto {
     private String userId;
-    @DateTimeFormat(pattern = "yyyy-MM")
-    private LocalDate localDate;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate targetDate;
 }

@@ -4,17 +4,13 @@ import com.parker.common.enums.TodoStatus;
 import com.parker.common.exception.CustomException;
 import com.parker.common.jpa.entity.SchedulesEntity;
 import com.parker.common.jpa.entity.TodosEntity;
-import com.parker.common.jpa.entity.UserEntity;
 import com.parker.common.jpa.repository.SchedulesRepository;
 import com.parker.common.jpa.repository.TodosRepository;
-import com.parker.common.jpa.repository.UserRepository;
 import com.parker.common.model.SchedulesModel;
 import com.parker.common.model.TodosModel;
-import com.parker.common.util.security.SecurityUtil;
 import com.parker.service.api.v1.dashboard.dto.DashBoardDto;
 import com.parker.service.api.v1.dashboard.dto.SearchRequestDto;
 import com.parker.service.api.v1.schedules.dto.SearchSchedulesDto;
-import com.parker.service.api.v1.schedules.service.SchedulesService;
 import com.parker.service.api.v1.todos.dto.TodosDtoSearchDto;
 import com.parker.service.api.v1.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
@@ -32,11 +27,8 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.parker.common.exception.enums.ResponseErrorCode.FAIL_400;
-import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 @Transactional
@@ -56,7 +48,7 @@ class DashboardServiceTest {
         // given
         DashBoardDto dashBoardDto = new DashBoardDto();
         SearchRequestDto searchRequestDto = new SearchRequestDto();
-        searchRequestDto.setLocalDate(LocalDate.now());
+        searchRequestDto.setTargetDate(LocalDate.now());
         Long userId = 1L;
 
         SearchSchedulesDto searchSchedulesDto = new SearchSchedulesDto();
@@ -77,10 +69,6 @@ class DashboardServiceTest {
 
         List<TodosEntity>todosEntityList = getDetailTodosList(todosDtoSearchDto, userId).stream().filter(item -> item.getStatus().equals(TodoStatus.PENDING.code()) || item.getStatus().equals(TodoStatus.IN_PROGRESS.code())).toList();
         dashBoardDto.setTodayList(todosEntityList.stream().map(TodosModel::new).toList());
-
-        for (TodosModel todosModel : dashBoardDto.getTodayList()) {
-            log.info(todosModel.toString());
-        }
 
         // then
         Assertions.assertAll(
