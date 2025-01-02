@@ -31,11 +31,10 @@ public class CorsConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.addAllowedOriginPattern("*");
-        config.addAllowedHeader("*");
-        config.addAllowedMethod("*");
-
-        source.registerCorsConfiguration("/client/**", config);
+        config.addAllowedOriginPattern("*"); // 모든 Origin 허용
+        config.addAllowedHeader("*"); // 모든 헤더 허용
+        config.addAllowedMethod("*"); // 모든 메서드 허용
+        source.registerCorsConfiguration("/**", config); // 모든 경로에 대해 CORS 설정 적용
         return new CorsFilter(source);
     }
 }

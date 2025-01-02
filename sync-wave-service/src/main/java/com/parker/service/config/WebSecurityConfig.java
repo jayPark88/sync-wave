@@ -7,6 +7,7 @@ import com.parker.common.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -65,6 +66,7 @@ public class WebSecurityConfig {
                 )
                 .authorizeHttpRequests(
                         authorize -> authorize
+                                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // OPTIONS 요청 허용
                                 .requestMatchers(new MvcRequestMatcher(introspector, "/v1/auth/login")).permitAll()
                                 .requestMatchers(new MvcRequestMatcher(introspector, "/v1/user/signUp")).permitAll()
                                 .anyRequest().authenticated()
